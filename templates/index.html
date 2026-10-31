@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<nav class="tabs">
+  <a href="/?sort=top" class="{{ 'on' if sort != 'new' }}">Más votados</a>
+  <a href="/?sort=new" class="{{ 'on' if sort == 'new' }}">Nuevos</a>
+</nav>
+<details class="compose">
+  <summary>Crear un post</summary>
+  <form class="stack" method="post" action="/post">
+    <input name="author" maxlength="30" placeholder="Tu nombre (opcional)" value="{{ name }}">
+    <input name="title" maxlength="150" placeholder="Título" required>
+    <textarea name="body" maxlength="5000" rows="5" placeholder="Texto (opcional)"></textarea>
+    <button class="btn">Publicar</button>
+  </form>
+</details>
+{% for p in posts %}
+<article class="card">
+  {% include "_vote.html" %}
+  <div class="content">
+    <h2><a href="/p/{{ p.id }}">{{ p.title }}</a></h2>
+    {% if p.body %}<p class="snippet">{{ p.body[:200] }}{% if p.body|length > 200 %}…{% endif %}</p>{% endif %}
+    <div class="meta">
+      <span>{{ p.author }}</span>
+      <span>{{ p.created_at|ago }}</span>
+      <a href="/p/{{ p.id }}#comentarios">{{ p.ncom }} comentario{{ '' if p.ncom == 1 else 's' }}</a>
+    </div>
+  </div>
+</article>
+{% else %}
+<p class="empty">Aún no hay posts. Crea el primero con el botón de arriba.</p>
+{% endfor %}
+{% endblock %}

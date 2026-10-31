@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ p.title }} · Hilos{% endblock %}
+{% block content %}
+<a class="back" href="/">Volver</a>
+<article class="card">
+  {% include "_vote.html" %}
+  <div class="content">
+    <h1>{{ p.title }}</h1>
+    <div class="meta"><span>{{ p.author }}</span><span>{{ p.created_at|ago }}</span></div>
+    {% if p.body %}<p class="body">{{ p.body }}</p>{% endif %}
+  </div>
+</article>
+<section id="comentarios">
+  <h2>{{ comments|length }} comentario{{ '' if comments|length == 1 else 's' }}</h2>
+  <form class="compose stack" method="post" action="/p/{{ p.id }}/comment">
+    <input name="author" maxlength="30" placeholder="Tu nombre (opcional)" value="{{ name }}">
+    <textarea name="body" maxlength="2000" rows="3" placeholder="Escribe un comentario" required></textarea>
+    <button class="btn">Comentar</button>
+  </form>
+  {% for c in comments %}
+  <div class="comment">
+    <div class="meta"><strong>{{ c.author }}</strong><span>{{ c.created_at|ago }}</span></div>
+    <p class="body">{{ c.body }}</p>
+  </div>
+  {% else %}
+  <p class="empty">Nadie ha comentado todavía. Escribe el primer comentario.</p>
+  {% endfor %}
+</section>
+{% endblock %}

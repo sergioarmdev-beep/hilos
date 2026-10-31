@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Hilos{% endblock %}</title>
+<style>
+:root{--bg:#eef1f4;--card:#fff;--ink:#1b2430;--mute:#66748a;--line:#d9dfe7;--up:#cc4520;--down:#3b6ea5}
+@media (prefers-color-scheme:dark){:root{--bg:#10151c;--card:#182029;--ink:#e6ebf2;--mute:#8d9bb0;--line:#263240;--up:#ef6a41}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--down);outline-offset:2px}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+header{background:var(--card);border-bottom:1px solid var(--line)}
+header .wrap{padding:14px 16px}
+.brand{font-weight:800;font-size:1.3rem;letter-spacing:-.02em;text-decoration:none}
+main{padding:20px 0 60px}
+.tabs{display:flex;gap:6px;margin-bottom:12px}
+.tabs a{padding:6px 14px;border-radius:999px;text-decoration:none;color:var(--mute);font-weight:600}
+.tabs a.on{background:var(--ink);color:var(--bg)}
+.card{display:flex;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px}
+.vote{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:40px}
+.vote button{border:0;background:none;color:var(--mute);font-size:16px;cursor:pointer;padding:4px 10px;border-radius:6px}
+.vote button:hover{background:var(--bg)}
+.vote .up.on{color:var(--up)}
+.vote .down.on{color:var(--down)}
+.score{font-weight:700}
+.content{min-width:0;flex:1}
+h1,h2{margin:0 0 4px;line-height:1.25}
+h1{font-size:1.5rem}
+h2{font-size:1.1rem}
+.content h2 a{text-decoration:none}
+.content h2 a:hover{text-decoration:underline}
+.snippet,.body{margin:4px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.snippet{color:var(--mute)}
+.meta{display:flex;gap:14px;flex-wrap:wrap;color:var(--mute);font-size:.875rem}
+.meta a{text-decoration:none}
+.meta a:hover{text-decoration:underline}
+.compose{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.compose summary{cursor:pointer;font-weight:600}
+.stack{display:grid;gap:8px;margin-top:10px}
+input,textarea{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+textarea{resize:vertical}
+.btn{justify-self:start;background:var(--up);color:#fff;border:0;border-radius:999px;padding:8px 18px;font:inherit;font-weight:600;cursor:pointer}
+.comment{border-left:2px solid var(--line);padding:2px 0 2px 12px;margin:16px 0}
+section h2{margin:26px 0 10px}
+.empty{color:var(--mute)}
+.back{display:inline-block;margin-bottom:10px;color:var(--mute);text-decoration:none}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="/">Hilos</a></div></header>
+<main class="wrap">
+{% block content %}{% endblock %}
+</main>
+<script>
+document.addEventListener('submit', async e => {
+  const f = e.target.closest('form.vote');
+  if (!f) return;
+  e.preventDefault();
+  try {
+    const r = await fetch(f.action, {method: 'POST', body: new URLSearchParams(new FormData(f, e.submitter)), headers: {Accept: 'application/json'}});
+    const d = await r.json();
+    f.querySelector('.score').textContent = d.score;
+    f.querySelector('.up').classList.toggle('on', d.mine === 1);
+    f.querySelector('.down').classList.toggle('on', d.mine === -1);
+  } catch (_) { f.submit(); }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+<form class="vote" method="post" action="/vote/{{ p.id }}">
+  <button name="value" value="1" class="up{{ ' on' if p.mine == 1 }}" aria-label="Votar a favor">▲</button>
+  <span class="score">{{ p.score }}</span>
+  <button name="value" value="-1" class="down{{ ' on' if p.mine == -1 }}" aria-label="Votar en contra">▼</button>
+</form>
